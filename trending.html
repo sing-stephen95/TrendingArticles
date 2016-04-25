@@ -1,42 +1,63 @@
-<!DOCTYPE html>
+<?xml version="1.0" encoding="UTF-8">
+<!DOCTYPE html trending SYSTEM "trending.dtd">
 <html>
- <head>
-  <title>News</title>
-  <script>
-  	function showKeyword(str){
-		  if (window.XMLHttpRequest) {
-		    // code for IE7+, Firefox, Chrome, Opera, Safari
-		    xmlhttp=new XMLHttpRequest();
-		  } else {  // code for IE6, IE5
-		    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-		  }
-		  xmlhttp.onreadystatechange=function() {
-		    if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-		      document.getElementById("trendingNews").innerHTML=xmlhttp.responseText;
-		    }
-		  }
-		  xmlhttp.open("GET","proxy.php",true);
-		  xmlhttp.send();
-  	}
-<<<<<<< HEAD
-  	setInterval(showKeyword, 30000);
-  </script>
+<head>
+	<title> Trending News </title>
+	<link rel = "stylesheet" type="text/css" href="style.css"/>
+</head>
 
- </head>
- <body onload="showKeyword()">
-=======
-  </script>
+<body>
+	<div id = "container">
+		<div id = "header">
+		  	<h1> Trending News </h1>
+		  	<form>
+		  		<label for "KeywordFilter">Keyword Filter:</label>
+		  		<input id = "enter" type ="text" name="enter"> 
+		  		<button id = "submit">Submit</button>
+		</div>
 
- </head>
- <body>
->>>>>>> e1c6636846e4f0fb9075bf00c7a92bb3a6b639d5
- 	<h1> Trending News </h1>
-	<form>
-		Keyword Filter <br>
-		<input type="text" name="keywordFilter">
-		<input type="button" value="Search" onclick="showKeyword(keywordFilter.value)"> 
-	</form>
-	<div id="trendingNews"></div>
+		<div id = "content">
+			<ul>
+				<li> trend 1  </li>
+				<li> trend 2  </li>
+				<li> tredn 3  </li>
+				<li> trend 4  </li>
+				<li> trend 5  </li>
+				<li> trend 6  </li>
+				<li> trend 7  </li>
+				<li> trend 8  </li>
+				<li> trend 9  </li>
+				<li> trend 10 </li>
+			</ul>
+	 	</div>
+	 </div>
 
- </body>
+	 <div id="news">
+     <h2 id="newsLink"><a href="http://yioop.com/s/news">News</a></h2> 
+     </div>
+
+	 <script type="text/javascript">
+    	if(window.XMLHttpRequest)
+    	{
+      		request = new XMLHttpRequest();
+    	}
+    	else
+    	{
+      		request = new ActiveXObject("Microsoft.XMLHTTP");
+    	}
+
+		request.onreadystatechange = function()
+    	{
+    		if(request.readyState == 4 && request.status == 200)
+        	{
+         		document.getElementById("news").innerHTML = request.responseText;
+        	}
+    	}
+
+    	request.open("GET", "proxy.php" , true); 
+   		request.send();
+  	 </script>
+
+
+</body>
 </html>
