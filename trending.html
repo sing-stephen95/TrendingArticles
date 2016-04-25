@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>News</title>
+  <script>
+  	function showKeyword(str){
+		  if (window.XMLHttpRequest) {
+		    // code for IE7+, Firefox, Chrome, Opera, Safari
+		    xmlhttp=new XMLHttpRequest();
+		  } else {  // code for IE6, IE5
+		    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		  }
+		  xmlhttp.onreadystatechange=function() {
+		    if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+		      document.getElementById("trendingNews").innerHTML=xmlhttp.responseText;
+		    }
+		  }
+		  xmlhttp.open("GET","proxy.php",true);
+		  xmlhttp.send();
+  	}
+  	setInterval(showKeyword, 30000);
+  </script>
+
+ </head>
+ <body onload="showKeyword()">
+ 	<h1> Trending News </h1>
+	<form>
+		Keyword Filter <br>
+		<input type="text" name="keywordFilter">
+		<input type="button" value="Search" onclick="showKeyword(keywordFilter.value)"> 
+	</form>
+	<div id="trendingNews"></div>
+
+ </body>
+</html>
