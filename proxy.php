@@ -34,7 +34,7 @@ if(isset($_GET['num'])){
 	$path = $path."&num=".$num;
 }
 else{
-	$num = 20;
+	$num = 100;
 	$path = $path."&num=".$num;
 }
 $url = HOSTNAME.$path;
