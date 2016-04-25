@@ -1,8 +1,9 @@
 <?xml version = "1.0" encoding ="utf-8" ?>
-<!-- trending.dtd  -->
+<!-- trending.dtd -->
 <!ELEMENT trending (topic+) >
 <!ELEMENT topic (keyword+, frequency_score, query_filter+, url) >
 <!ELEMENT frequency_score (#PCDATA)>
 <!ELEMENT query_filter (#PCDATA)>
 <!ELEMENT url (#PCDATA)>
+<!ATTLIST fading number CDATA #REQUIRED>
 <!ENTITY cs "computer science" >
