@@ -35,25 +35,48 @@
 		function Request(proxy_format){
 			if(window.XMLHttpRequest)
 			{
-				request = new XMLHttpRequest();
+				xmlhttp = new XMLHttpRequest();
 			}
 			else
 			{
-				request = new ActiveXObject("Microsoft.XMLHTTP");
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 			}
 
-			request.onreadystatechange = function()
+			xmlhttp.onreadystatechange = function()
 			{
-				if(request.readyState == 4 && request.status == 200)
+				if(xmlhttp.readyState == 4 && xmlhttp.status == 200)
 				{
-					document.getElementById("news").innerHTML = request.responseText;
+					 if(proxy_format=="json"){
+					 }
+					 else if(proxy_format=="rss"){
+					 
+						//alert(xmlhttp.responseText);
+						document.getElementById("news").innerHTML = xmlhttp.responseText;
+						//parseRSS(xmlhttp.responseText);
+					 }
+                     
 				}
 			}
 			
-			request.open("GET", "proxy.php" + "?f=" + proxy_format + "&q=" + enter.value + "&num=100", true); 
+			xmlhttp.open("GET", "proxy.php" + "?f=" + proxy_format + "&q=" + enter.value + "&num=100", true); 
 			
-			request.send();
+			xmlhttp.send();
 		}
+		
+		/*function parseRSS(xml){
+			var items = xml.replace(/<\/item>/, "</item>\n\n");
+			//items = items.replace(/<\/title>/, "</title>\n);
+			
+			var parser = new DOMParser();
+			var xmlDoc = parser.parseFromString(xml, "text/xml");
+			txt = "";
+			x = xmlDoc.getElementsByTagName("item");
+			for (i = 0; i < x.length; i++) {
+			  txt += x[i].childNodes[0].nodeValue + "<br>";
+			  }
+
+			document.getElementById("news").innerHTML = items;
+		}*/
   	 </script>
 </head>
 
@@ -64,7 +87,7 @@
 		  	<form>
 		  		<label for "KeywordFilter">Keyword Filter:</label>
 		  		<input id = "enter" type ="text" name="enter"> 
-		  		<button id = "submit">Submit</button>
+		  		<!--button id = "submit">Submit</button-->
 		</div>
 
 		<div id = "content">
@@ -83,9 +106,10 @@
 	 	</div>
 	 </div>
 
-	 <div id="news">
-     <h2 id="newsLink"><a href="http://yioop.com/s/news">News</a></h2> 
+	 <div id="newss">
+     <!--h2 id="newsLink"><a href="http://yioop.com/s/news">News</a></h2--> 
      </div>
+	 <textarea readonly rows="100" cols="160" id='news'></textarea>
 
 
 </body>
