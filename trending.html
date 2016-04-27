@@ -4,9 +4,60 @@
 <head>
 	<title> Trending News </title>
 	<link rel = "stylesheet" type="text/css" href="style.css"/>
+	<script type="text/javascript">
+		function check(){
+                var loc = window.location.href;
+				
+				//Check if proxy_format field exists
+				if(loc.indexOf('proxy_format') >= 0){
+					//Extract the query string
+					var qString = loc.split('?');
+					
+					//Separate fields from query string
+					var qFields = qString[1].split('&');
+					
+					//Get value of proxy_format. RSS or JSON
+					if(qFields.indexOf('proxy_format') >= 0){
+						var i = qFields.indexOf('proxy_format');
+						var pfField= qFields[i].split('=');
+						var proxy_format = pfField[1];
+					}
+				}
+				else{
+					var proxy_format = 'rss';
+				}
+
+                Request(proxy_format);
+				
+                setTimeout(check, 30000);
+            
+		}
+		function Request(proxy_format){
+			if(window.XMLHttpRequest)
+			{
+				request = new XMLHttpRequest();
+			}
+			else
+			{
+				request = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+
+			request.onreadystatechange = function()
+			{
+				if(request.readyState == 4 && request.status == 200)
+				{
+					document.getElementById("news").innerHTML = request.responseText;
+				}
+			}
+			
+			request.open("GET", "proxy.php" + "?f=" + proxy_format + "&q=" + enter.value + "&num=100", true); 
+			
+			request.send();
+		}
+  	 </script>
 </head>
 
-<body>
+<body onload="check()">
 	<div id = "container">
 		<div id = "header">
 		  	<h1> Trending News </h1>
@@ -20,7 +71,7 @@
 			<ul>
 				<li> trend 1  </li>
 				<li> trend 2  </li>
-				<li> tredn 3  </li>
+				<li> trend 3  </li>
 				<li> trend 4  </li>
 				<li> trend 5  </li>
 				<li> trend 6  </li>
@@ -35,28 +86,6 @@
 	 <div id="news">
      <h2 id="newsLink"><a href="http://yioop.com/s/news">News</a></h2> 
      </div>
-
-	 <script type="text/javascript">
-    	if(window.XMLHttpRequest)
-    	{
-      		request = new XMLHttpRequest();
-    	}
-    	else
-    	{
-      		request = new ActiveXObject("Microsoft.XMLHTTP");
-    	}
-
-		request.onreadystatechange = function()
-    	{
-    		if(request.readyState == 4 && request.status == 200)
-        	{
-         		document.getElementById("news").innerHTML = request.responseText;
-        	}
-    	}
-
-    	request.open("GET", "proxy.php" , true); 
-   		request.send();
-  	 </script>
 
 
 </body>
