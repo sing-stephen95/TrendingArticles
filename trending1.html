@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE trending_topic SYSTEM "trending_topic.dtd">
+<html>
+<head>
+	<title> Trending News </title>
+	<link rel = "stylesheet" type="text/css" href="style.css"/>
+</head>
+
+<body>
+	<div id = "container">
+		<div id = "header">
+		  	<h1> Trending News </h1>
+		  	<form>
+		  		<label for "KeywordFilter">Keyword Filter:</label>
+		  		<input type ="text" id ="query" name="query" /> 
+          <input type ="button" value ="SUBMIT" id ="submit" name ="submit" onclick ="return checkEmpty();"/>
+
+        </form>
+		</div>
+
+		<div id = "content">
+			<ul>
+				<li> trend 1  </li>
+				<li> trend 2  </li>
+				<li> tredn 3  </li>
+				<li> trend 4  </li>
+				<li> trend 5  </li>
+				<li> trend 6  </li>
+				<li> trend 7  </li>
+				<li> trend 8  </li>
+				<li> trend 9  </li>
+				<li> trend 10 </li>
+			</ul>
+	 	</div>
+	</div>
+
+     <div id ="id1">
+     </div>
+
+     <div id ="id2">
+     </div>
+
+
+  <script type="text/javascript">
+  var flag= true;
+  var input;
+  var arr;
+  
+  function elt(id) 
+  {
+    return document.getElementById(id); 
+  } 
+
+  function checkEmpty() 
+  {
+    input = elt('query').value;
+
+    if(input == "") 
+    {
+      alert("Please Enter something");
+    }
+    else 
+    {
+      if(input != "") 
+      {
+        getWords(input);
+      }
+      flag=false;   
+    }
+    
+  }
+
+  function getWords(string) 
+  { 
+    var url = "?f=json&q="+string+"&limit=0&num100";
+
+    if(window.XMLHttpRequest) 
+    {
+      request = new XMLHttpRequest();
+    }
+
+    else 
+    {
+      request = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    request.open("GET", "proxy.php" + url, true); 
+    request.send();
+      
+		    request.onreadystatechange = function() 
+        {
+    	   if(request.readyState == 4 && request.status == 200) 
+          {
+            //var myData = JSON.parse(request.responseText);
+            var myData = eval( "(" + request.responseText + ")" ); 
+            var s1 = JSON.stringify(myData);
+            var s3 = s1.replace(/[^a-zA-Z]/g, ' ');
+            var s4 = s3.replace(/\s/g, ',');
+            var s5 = s4.replace(/,+/g, ',');
+            var s6 = s5.replace(/^,/, '');
+            var s7 = s6.replace(/,$/, '');
+            arr = s7.split(",");
+
+            document.getElementById("id1").innerHTML =arr;
+          }
+        }
+  }
+
+</script>
+
+
+</body>
+</html>
