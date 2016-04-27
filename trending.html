@@ -49,9 +49,16 @@
 					 if(proxy_format=="json"){
 					 }
 					 else if(proxy_format=="rss"){
-					 
+
 						//alert(xmlhttp.responseText);
-						document.getElementById("news").innerHTML = xmlhttp.responseText;
+						//
+
+						//regex to isolate the items outputted as string by xmlhttp.responseText
+						var tag = /<\/?[item/]+>.+<\/?[item/]+>/gi;
+						//matches all substring found by regex and stores them in an array
+						var matches = xmlhttp.responseText.match(tag);
+						//outputs (in this case) an array element to the HTML tag
+						document.getElementById("news").innerHTML = matches[0];
 						//parseRSS(xmlhttp.responseText);
 					 }
                      
@@ -64,7 +71,7 @@
 		}
 		
 		/*function parseRSS(xml){
-			var items = xml.replace(/<\/item>/, "</item>\n\n");
+			var items = xml.match(/<\/item>/, "</item>\n\n);
 			//items = items.replace(/<\/title>/, "</title>\n);
 			
 			var parser = new DOMParser();
@@ -86,7 +93,10 @@
 		  	<h1> Trending News </h1>
 		  	<form>
 		  		<label for "KeywordFilter">Keyword Filter:</label>
-		  		<input id = "enter" type ="text" name="enter"> 
+		  		<input id = "enter" type ="text" name="enter"> <br>
+		  		<input type="radio" name="renderType" value="None" checked> None
+ 				<input type="radio" name="renderType" value="RSS"> RSS
+  				<input type="radio" name="renderType" value="JSON"> JSON
 		  		<!--button id = "submit">Submit</button-->
 		</div>
 
@@ -110,6 +120,7 @@
      <!--h2 id="newsLink"><a href="http://yioop.com/s/news">News</a></h2--> 
      </div>
 	 <textarea readonly rows="100" cols="160" id='news'></textarea>
+
 
 
 </body>
