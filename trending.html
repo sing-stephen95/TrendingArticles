@@ -77,7 +77,7 @@
 			var itemtag = /<\/?[item/]+>.+<\/?[item/]+>/gi;
 			var titletag = /<\/?[title/]+>.+<\/?[title/]+>/gi;
 			var desctag = /<\/?[description/]+>.+<\/?[description/]+>/gi;
-			var pubtag = /<\/?[description/]+>.+<\/?[description/]+>/gi;
+			var pubtag = /<\/?[pubdate/]+>.+<\/?[pubdate/]+>/gi;
 			//matches all substring found by regex and stores them in an array
 			var title_matches = xmlhttp.responseText.match(titletag);
 			var desc_matches  = xmlhttp.responseText.match(desctag);
@@ -199,43 +199,51 @@
 		function calcFading(ten, title_matches, desc_matches, pubtag_matches){
 			var fade_array = [];
 			var secIn2Day = 86400 * 2;
-			var curTime = new Date().getTime()/1000;
+			var curTime = Math.round(new Date().getTime()/1000);
 			
+			//alert(curTime);
+			//alert(parseInt(pubtag_matches[0].replace(/(^.+\D)(\d+)(\D.+$)/i,'$2')));
+			//alert(Math.abs(curTime - parseInt(pubtag_matches[0].replace(/(^.+\D)(\d+)(\D.+$)/i,'$2')));
+			
+			var pub_time_dif = [];
+			
+			for(var i = 0; i < pubtag_matches.length; i++){
+				pub_time_dif[i] = curTime - parseInt(pubtag_matches[i].replace(/(^.+\D)(\d+)(\D.+$)/i,'$2'));
+			}
+			//alert(pub_time_dif[0]);
+			
+			for(var t in ten){
+					fade_array[t] = true;
+			}
+
 			//pub in past 2 days
 			
+			
 			for(var t in ten){
-				var tCount = 0;
-				var dCount = 0;
-				for(title in title_matches){
-					if(title.indexOf(t) >= 0){
-						if(curTime - pubtag_matches[tCount] <= secIn2Day ){
-							fade_array[t] = false;
+
+				for(var title in title_matches){
+					if(title_matches[title].toLowerCase().indexOf(t) != -1){
+
+						if(pub_time_dif[title] <= secIn2Day ){
+							fade_array[t] = false;							
 						}
 					}
-					else{
-						
-					}
-					tCount++;
+					
 				}
-				
-				for(desc in desc_matches){
-					if(title.indexOf(t) >= 0){
-						if(curTime - pubtag_matches[dCount] <= secIn2Day ){
+
+				for(var desc in desc_matches){
+					if(desc_matches[desc].toLowerCase().indexOf(t) != -1){
+						
+						if(pub_time_dif[desc] <= secIn2Day ){
 							fade_array[t] = false;
 						}
 					}
-					else{
-						
-					}
-					dCount++;
+
+					
 				}
 			}
 			
-			for(var t in ten){
-				if(fade_array[t] != false){
-					fade_array[t] = true;
-				}
-			}
+			
 			
 			return fade_array;
 		}
