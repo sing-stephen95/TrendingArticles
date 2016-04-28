@@ -50,15 +50,13 @@
 					 }
 					 else if(proxy_format=="rss"){
 
-						//alert(xmlhttp.responseText);
-						//
+						document.getElementById("news").innerHTML = xmlhttp.responseText;
 
-						//regex to isolate the items outputted as string by xmlhttp.responseText
-						var tag = /<\/?[item/]+>.+<\/?[item/]+>/gi;
-						//matches all substring found by regex and stores them in an array
-						var matches = xmlhttp.responseText.match(tag);
-						//outputs (in this case) an array element to the HTML tag
-						document.getElementById("news").innerHTML = matches[0];
+						//
+						//document.getElementById("news").innerHTML = matches[0];
+						
+						request_callback_rss(xmlhttp.responseText);
+						
 						//parseRSS(xmlhttp.responseText);
 					 }
                      
@@ -70,20 +68,72 @@
 			xmlhttp.send();
 		}
 		
-		/*function parseRSS(xml){
-			var items = xml.match(/<\/item>/, "</item>\n\n);
-			//items = items.replace(/<\/title>/, "</title>\n);
+		function request_callback_rss(rss){
+			document.getElementById("news").innerHTML = "CALLED";
 			
-			var parser = new DOMParser();
-			var xmlDoc = parser.parseFromString(xml, "text/xml");
-			txt = "";
-			x = xmlDoc.getElementsByTagName("item");
-			for (i = 0; i < x.length; i++) {
-			  txt += x[i].childNodes[0].nodeValue + "<br>";
-			  }
+			
+			var word =[];
+			//regex to isolate the items outputted as string by xmlhttp.responseText
+			var itemtag = /<\/?[item/]+>.+<\/?[item/]+>/gi;
+			var titletag = /<\/?[title/]+>.+<\/?[title/]+>/gi;
+			var desctag = /<\/?[description/]+>.+<\/?[description/]+>/gi;
+			//matches all substring found by regex and stores them in an array
+			var title_matches = xmlhttp.responseText.match(titletag);
+			var desc_matches  = xmlhttp.responseText.match(desctag);
+			alert(title_matches);
+			alert(desc_matches);
+			
+			//outputs (in this case) an array element to the HTML tag
+			
+			//Go through titles and count words
+				for(var i = 0; i < title_matches.length; i++){
+					var s1 = title_matches[0];
+					var s3 = s1.replace(/[^a-zA-Z]/g, ' ');
+					var s4 = s3.replace(/\s/g, ',');
+					var s5 = s4.replace(/,+/g, ',');
+					var s6 = s5.replace(/^,/, '');
+					var s7 = s6.replace(/,$/, '');
+					var arr = s7.split(",");
+					
+					for(var j = 0; j < arr.length; j++){
+						if(typeof word[arr[j].toLowerCase()] !== 'number'){
+							word[arr[j].toLowerCase()] = 1;
+							
+						}
+						else{
+							word[arr[j].toLowerCase()]++;
+						}
+					}
+					
+					
+				}
+				
+				//Go through description and count words
+				for(var i = 0; i < desc_matches.length; i++){
+					var s1 =  desc_matches[i];
+					var s3 = s1.replace(/[^a-zA-Z]/g, ' ');
+					var s4 = s3.replace(/\s/g, ',');
+					var s5 = s4.replace(/,+/g, ',');
+					var s6 = s5.replace(/^,/, '');
+					var s7 = s6.replace(/,$/, '');
+					var arr = s7.split(",");
+					
+					for(var j = 0; j < arr.length; j++){
+						if(typeof word[arr[j]] !== 'number'){
+							word[arr[j].toLowerCase()] = 1;
+						}
+						else{
+							word[arr[j].toLowerCase()]++;
+						}
+					}
+				}
 
-			document.getElementById("news").innerHTML = items;
-		}*/
+			
+			
+			//document.getElementById("news").innerHTML = word;
+			
+		}
+
   	 </script>
 </head>
 
@@ -94,11 +144,19 @@
 		  	<form>
 		  		<label for "KeywordFilter">Keyword Filter:</label>
 		  		<input id = "enter" type ="text" name="enter"> <br>
-		  		<input type="radio" name="renderType" value="None" checked> None
- 				<input type="radio" name="renderType" value="RSS"> RSS
-  				<input type="radio" name="renderType" value="JSON"> JSON
+		  		<!--input type="radio" name="proxy_format" value="None" checked-->
+ 				<input type="radio" name="proxy_format" value="rss"> RSS
+  				<input type="radio" name="proxy_format" value="json"> JSON
 		  		<!--button id = "submit">Submit</button-->
 		</div>
+
+	 </div>
+
+	 <div id="newss">
+     <!--h2 id="newsLink"><a href="http://yioop.com/s/news">News</a></h2--> 
+     </div>
+	 <textarea readonly rows="100" cols="160" id='news'></textarea>
+
 
 		<div id = "content">
 			<ul>
@@ -114,14 +172,6 @@
 				<li> trend 10 </li>
 			</ul>
 	 	</div>
-	 </div>
-
-	 <div id="newss">
-     <!--h2 id="newsLink"><a href="http://yioop.com/s/news">News</a></h2--> 
-     </div>
-	 <textarea readonly rows="100" cols="160" id='news'></textarea>
-
-
 
 </body>
 </html>
