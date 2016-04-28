@@ -44,6 +44,7 @@
 						//document.getElementById("news").innerHTML = matches[0];
 						
 						//request_callback_rss(xmlhttp.responseText);
+						request_callback_json(xmlhttp.responseText);
 						
 						
 						//parseRSS(xmlhttp.responseText);
@@ -78,6 +79,92 @@
 			var titletag = /<\/?[title/]+>.+<\/?[title/]+>/gi;
 			var desctag = /<\/?[description/]+>.+<\/?[description/]+>/gi;
 			var pubtag = /<\/?[pubdate/]+>.+<\/?[pubdate/]+>/gi;
+			//matches all substring found by regex and stores them in an array
+			var title_matches = xmlhttp.responseText.match(titletag);
+			var desc_matches  = xmlhttp.responseText.match(desctag);
+			var pubtag_matches = xmlhttp.responseText.match(pubtag);
+			//alert(title_matches);
+			//alert(desc_matches);
+			
+			//outputs (in this case) an array element to the HTML tag
+			
+			//Go through titles and count words
+				for(var i = 0; i < title_matches.length; i++){
+					var s1 = title_matches[0];
+					var s3 = s1.replace(/[^a-zA-Z]/g, ' ');
+					var s4 = s3.replace(/\s/g, ',');
+					var s5 = s4.replace(/,+/g, ',');
+					var s6 = s5.replace(/^,/, '');
+					var s7 = s6.replace(/,$/, '');
+					var arr = s7.split(",");
+					
+					for(var j = 0; j < arr.length; j++){
+						if(typeof word[arr[j].toLowerCase()] !== 'number'){
+							word[arr[j].toLowerCase()] = 1;
+							
+						}
+						else{
+							word[arr[j].toLowerCase()]++;
+						}
+					}
+					
+					
+				}
+				
+				//Go through description and count words
+				for(var i = 0; i < desc_matches.length; i++){
+					var s1 =  desc_matches[i];
+					var s3 = s1.replace(/[^a-zA-Z]/g, ' ');
+					var s4 = s3.replace(/\s/g, ',');
+					var s5 = s4.replace(/,+/g, ',');
+					var s6 = s5.replace(/^,/, '');
+					var s7 = s6.replace(/,$/, '');
+					var arr = s7.split(",");
+					
+					for(var j = 0; j < arr.length; j++){
+						if(typeof word[arr[j]] !== 'number'){
+							word[arr[j].toLowerCase()] = 1;
+						}
+						else{
+							word[arr[j].toLowerCase()]++;
+						}
+					}
+				}
+			//exclude words (from syntax parsed along with article words)
+			word['title'] = 0;
+			word['description'] = 0;
+			word['amp'] = 0;
+			word['l'] = 0;
+			word['lang'] = 0;
+			word['en']= 0;
+			word['php'] = 0;
+			word['engine'] = 0;
+			word['yioop'] = 0;
+			word['submitted'] = 0;
+			word['comments'] = 0;
+			word['link'] = 0;
+			word['by'] = 0;
+			word['mdash'] = 0;
+			word['quot'] = 0;
+			
+			var out = "";
+			for(var l in word){
+				out+= l + "--" + word[l]+ "\n";
+			}
+			
+			calc10(word, title_matches, desc_matches, pubtag_matches);
+			
+			//document.getElementById("news").innerHTML = out;
+		}
+
+		function request_callback_json(rss){		
+			
+			var word =[];
+			//regex to isolate the items outputted as string by xmlhttp.responseText
+			var itemtag = /<\/?[item/]+>.+<\/?[item/]+>/gi;
+			var titletag = /"title":"(.*?)",/gi;
+			var desctag = /"description":"(.*?)",/gi;
+			var pubtag = /pub_date":(.*?)},{"/gi;
 			//matches all substring found by regex and stores them in an array
 			var title_matches = xmlhttp.responseText.match(titletag);
 			var desc_matches  = xmlhttp.responseText.match(desctag);
