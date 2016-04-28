@@ -57,6 +57,7 @@
 						
 						request_callback_rss(xmlhttp.responseText);
 						
+						
 						//parseRSS(xmlhttp.responseText);
 					 }
                      
@@ -68,18 +69,18 @@
 			xmlhttp.send();
 		}
 		
-		function request_callback_rss(rss){
-			document.getElementById("news").innerHTML = "CALLED";
-			
+		function request_callback_rss(rss){		
 			
 			var word =[];
 			//regex to isolate the items outputted as string by xmlhttp.responseText
 			var itemtag = /<\/?[item/]+>.+<\/?[item/]+>/gi;
 			var titletag = /<\/?[title/]+>.+<\/?[title/]+>/gi;
 			var desctag = /<\/?[description/]+>.+<\/?[description/]+>/gi;
+			var pubtag = /<\/?[description/]+>.+<\/?[description/]+>/gi;
 			//matches all substring found by regex and stores them in an array
 			var title_matches = xmlhttp.responseText.match(titletag);
 			var desc_matches  = xmlhttp.responseText.match(desctag);
+			var pubtag_matches = xmlhttp.responseText.match(pubtag);
 			//alert(title_matches);
 			//alert(desc_matches);
 			
@@ -149,12 +150,12 @@
 				out+= l + "--" + word[l]+ "\n";
 			}
 			
-			calc10(word);
+			calc10(word, title_matches, desc_matches, pubtag_matches);
 			
 			//document.getElementById("news").innerHTML = out;
 		}
 		
-		function calc10(word){
+		function calc10(word, title_matches, desc_matches, pubtag_matches){
 			var curMaxCount = 0;
 			var curMaxWord = "";
 			var ten = [];
@@ -171,11 +172,73 @@
 				word[curMaxWord] = 0;
 				curMaxCount = 0;
 			}
+			var fade = calcFading(ten, title_matches, desc_matches, pubtag_matches);
+			var trend = "<ul>";
+			for(var t in ten){
+				trend += "<li>" + t + "(" + ten[t] + ")";
+				if(fade[t] == false){
+					for(var i = 0; i < ten[t]; i++){
+						trend += "<gbar>  </gbar>";
+					}
+					trend += "</li><br>";
+				}
+				else{
+					for(var i = 0; i < ten[t]; i++){
+						trend += "<rbar>  </rbar>";
+					}
+					trend += "</li><br>";
+				}
+				
+			}			
+			trend += "</ul>";
 			
-			for(var kk in ten){
-				alert(kk + ":" + ten[kk]);
-			}
+			document.getElementById("trend").innerHTML = trend;
 		}
+		
+		function calcFading(ten, title_matches, desc_matches, pubtag_matches){
+			var fade_array = [];
+			var secIn2Day = 86400 * 2;
+			var curTime = new Date().getTime()/1000;
+			
+			//pub in past 2 days
+			
+			for(var t in ten){
+				var tCount = 0;
+				var dCount = 0;
+				for(title in title_matches){
+					if(title.indexOf(t) >= 0){
+						if(curTime - pubtag_matches[tCount] <= secIn2Day ){
+							fade_array[t] = false;
+						}
+					}
+					else{
+						
+					}
+					tCount++;
+				}
+				
+				for(desc in desc_matches){
+					if(title.indexOf(t) >= 0){
+						if(curTime - pubtag_matches[dCount] <= secIn2Day ){
+							fade_array[t] = false;
+						}
+					}
+					else{
+						
+					}
+					dCount++;
+				}
+			}
+			
+			for(var t in ten){
+				if(fade_array[t] != false){
+					fade_array[t] = true;
+				}
+			}
+			
+			return fade_array;
+		}
+
 
   	 </script>
 </head>
@@ -201,19 +264,9 @@
 	 <textarea readonly rows="100" cols="160" id='news'></textarea>
 
 
-		<div id = "content">
-			<ul>
-				<li> trend 1  </li>
-				<li> trend 2  </li>
-				<li> trend 3  </li>
-				<li> trend 4  </li>
-				<li> trend 5  </li>
-				<li> trend 6  </li>
-				<li> trend 7  </li>
-				<li> trend 8  </li>
-				<li> trend 9  </li>
-				<li> trend 10 </li>
-			</ul>
+		<div>
+			<div id = "trend">
+			</div>
 	 	</div>
 
 </body>
