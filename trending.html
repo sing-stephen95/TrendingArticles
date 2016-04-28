@@ -80,8 +80,8 @@
 			//matches all substring found by regex and stores them in an array
 			var title_matches = xmlhttp.responseText.match(titletag);
 			var desc_matches  = xmlhttp.responseText.match(desctag);
-			alert(title_matches);
-			alert(desc_matches);
+			//alert(title_matches);
+			//alert(desc_matches);
 			
 			//outputs (in this case) an array element to the HTML tag
 			
@@ -127,11 +127,54 @@
 						}
 					}
 				}
-
+			//exclude words (from syntax parsed along with article words)
+			word['title'] = 0;
+			word['description'] = 0;
+			word['amp'] = 0;
+			word['l'] = 0;
+			word['lang'] = 0;
+			word['en']= 0;
+			word['php'] = 0;
+			word['engine'] = 0;
+			word['yioop'] = 0;
+			word['submitted'] = 0;
+			word['comments'] = 0;
+			word['link'] = 0;
+			word['by'] = 0;
+			word['mdash'] = 0;
+			word['quot'] = 0;
 			
+			var out = "";
+			for(var l in word){
+				out+= l + "--" + word[l]+ "\n";
+			}
 			
-			//document.getElementById("news").innerHTML = word;
+			calc10(word);
 			
+			//document.getElementById("news").innerHTML = out;
+		}
+		
+		function calc10(word){
+			var curMaxCount = 0;
+			var curMaxWord = "";
+			var ten = [];
+			
+			for(var z = 0; z < 10; z++){
+				for(var i in word){
+					if(curMaxCount < word[i]){
+						curMaxCount = word[i];
+						curMaxWord = i;
+					}
+				}
+				var cur = word[curMaxWord];
+				ten[curMaxWord] = cur;
+				word[curMaxWord] = 0;
+				curMaxCount = 0;
+			}
+			
+			for(var kk in ten){
+				alert(kk + ":" + ten[kk]);
+			}
 		}
 
   	 </script>
