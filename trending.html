@@ -7,25 +7,15 @@
 	<script type="text/javascript">
 		function check(){
                 var loc = window.location.href;
-				
-				//Check if proxy_format field exists
-				if(loc.indexOf('proxy_format') >= 0){
-					//Extract the query string
-					var qString = loc.split('?');
-					
-					//Separate fields from query string
-					var qFields = qString[1].split('&');
-					
-					//Get value of proxy_format. RSS or JSON
-					if(qFields.indexOf('proxy_format') >= 0){
-						var i = qFields.indexOf('proxy_format');
-						var pfField= qFields[i].split('=');
-						var proxy_format = pfField[1];
-					}
-				}
-				else{
+
+                if(document.getElementById("buttonRSS").checked) {
+				  var proxy_format = 'rss';
+				}else if(document.getElementById("buttonJSON").checked) {
+				  var proxy_format = 'json';
+				}else{
 					var proxy_format = 'rss';
 				}
+				
 
                 Request(proxy_format);
 				
@@ -47,6 +37,17 @@
 				if(xmlhttp.readyState == 4 && xmlhttp.status == 200)
 				{
 					 if(proxy_format=="json"){
+
+						document.getElementById("news").innerHTML = xmlhttp.responseText;
+
+						//
+						//document.getElementById("news").innerHTML = matches[0];
+						
+						//request_callback_rss(xmlhttp.responseText);
+						
+						
+						//parseRSS(xmlhttp.responseText);
+
 					 }
 					 else if(proxy_format=="rss"){
 
@@ -249,11 +250,11 @@
 		  	<h1> Trending News </h1>
 		  	<form>
 		  		<label for "KeywordFilter">Keyword Filter:</label>
-		  		<input id = "enter" type ="text" name="enter"> <br>
-		  		<!--input type="radio" name="proxy_format" value="None" checked-->
- 				<input type="radio" name="proxy_format" value="rss"> RSS
-  				<input type="radio" name="proxy_format" value="json"> JSON
+		  		<input id = "enter" type ="text" name="enter"/> <br>
+ 				<input type="radio" id='buttonRSS' name="proxy_format" value="rss"/> RSS
+  				<input type="radio" id='buttonJSON' name="proxy_format" value="json"/> JSON
 		  		<!--button id = "submit">Submit</button-->
+		  	</form>
 		</div>
 
 	 </div>
